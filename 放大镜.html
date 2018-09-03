@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    #small,#big{
+        float:left;
+        border:1px solid;
+    }
+    #small{
+        width: 400px;
+        height: 400px;
+        position:relative;
+    }
+    #small #drag{
+        width: 200px;
+        height: 200px;
+        background:#ccc;
+        opacity: 0.5;
+        position:absolute;
+        left:0;
+        top:0;
+        display:none;
+    }
+    #small #mask{
+        width:100%;
+        height:100%;
+        background:rgba(255,0,0,0);
+        position:absolute;
+        left:0;
+        top:0;
+
+    }
+    #big{
+        width: 400px;
+        height: 400px;
+        overflow: hidden;
+        position:relative;
+        display:none;
+    }
+    #big img{
+        position:absolute;
+        left:0;
+        top:0;
+    }
+   
+    </style>
+</head>
+<body>
+    <div id="small"><img src="images/small.jpg" alt="">
+    <div id="drag"></div>
+    <div id="mask"></div>
+    </div>
+    <div id="big"><img src="images/big.jpg" alt=""></div>
+    <script>
+    var oSmall=document.getElementById("small");//展示图
+    var oDrag=document.getElementById("drag");//移动块
+    var oMask=document.getElementById("mask");//遮罩层
+    var oBig=document.getElementById("big");
+    var oBigImg=oBig.getElementsByTagName("img")[0];
+
+    oMask.onmousemove=function(e){
+    //一、矩形块在蒙版里不出边界
+       var e=e||window.event;
+       //鼠标在oDrag正中的位置。
+       var left=e.clientX-oDrag.offsetWidth/2;
+       var top=e.clientY-oDrag.offsetHeight/2;
+       
+      // console.log("left"+left);
+   //oDrag只能在oMask的范围内移动
+        if(left<0){left=0;}
+        if(top<0){top=0;}
+        var maxX=oMask.offsetWidth-oDrag.offsetWidth;
+        var maxY=oMask.offsetHeight-oDrag.offsetHeight;
+        if(left>maxX){left=maxX;}
+        if(top>maxY){top=maxY;}
+        oDrag.style.left=left+"px";
+            oDrag.style.top=top+"px";  
+//二、实现大图等比例缩放
+      var scaleX=left/maxX;
+      var scaleY=top/maxY;
+      oBigImg.style.left=-(oBigImg.offsetWidth-oBig.offsetWidth)*scaleX+"px";
+      oBigImg.style.top=-(oBigImg.offsetHeight-oBig.offsetHeight)*scaleY+"px";
+    }
+    //注意： 大图和小图的比例是2：1 ，小图与oDrag比例是2：1
+
+    oMask.onmouseover=function(){
+       oBig.style.display="block";
+       oDrag.style.display="block";
+    }
+    oMask.onmouseout=function(){
+        oBig.style.display="none";
+       oDrag.style.display="none";
+    }
+    </script>
+</body>
+</html>
